@@ -1,0 +1,50 @@
+// LIST lst;
+    // Data data;                     //khai bao list
+    // NODE *node = CreateNode(data); // khai bao1 node
+    // cout << node->data.n << endl;
+    // //khoi tao list
+    // Init(lst);
+    // //check null
+    // if (isEmpty(lst))
+    // {
+    //     cout << "List bi null" << endl;
+    // }
+    // //Them vao dau
+    // AddHead(lst, node);
+    // node = CreateNode(data);
+    // AddHead(lst, node);
+    for (Node *i = l.pHead; i != NULL; i = i->pNext)
+    {
+        if ((i->info) % 2 == 0)
+        {
+            AddTail(l1, i);
+        }
+        if ((i->info) % 2 == 1)
+        {
+            AddTail(l2, i);
+        }
+    }
+
+
+    while (l.pHead != NULL)
+    {
+
+        if (l.pHead->info % 2 == 0)
+        {
+            if (l.pHead->pNext == NULL)
+            {
+                l.pHead = l.pHead->pNext;
+                AddTail(l1, l.pHead->pNext);
+            }
+            l.pHead = l.pHead->pNext;
+        }
+        else
+        {
+            if (l.pHead->pNext == NULL)
+            {
+                l.pHead = l.pHead->pNext;
+            }
+            AddTail(l2, l.pHead);
+            l.pHead = l.pHead->pNext;
+        }
+    }
