@@ -1,3 +1,5 @@
+#include <iostream>
+using namespace std;
 struct node
 {
     int info;
@@ -109,17 +111,6 @@ node *Merge(node *h1, node *h2)
 
     return h1;
 }
-bool tang(List l)
-{
-
-    for (node *t = l.pHead; t->pNext != NULL; t = t->pNext)
-    {
-        if (t->info > t->pNext->info)
-
-            return false;
-    }
-    return true;
-}
 void MergeSort(node **head)
 {
     node *first = new node;
@@ -157,41 +148,76 @@ void SortIncrease(List &l)
 {
     MergeSort(&l.pHead);
 }
-int main()
+node *merge(node *a, node *b)
 {
-    List l;
-    CreateList(l);
-    nhap(l);
-    if (l.pHead == NULL)
-        cout << "Danh sach rong.";
+    node *result = NULL;
+
+    /* Base cases */
+    if (a == NULL)
+        return (b);
+    else if (b == NULL)
+        return (a);
+
+    /* Pick either a or b, and recur */
+    if (a->info <= b->info)
+    {
+        result = a;
+        result->pNext = merge(a->pNext, b);
+    }
     else
     {
-        int check = tang(l);
-        int x = 0;
-        if (check == true)
-            cin >> x;
-        cout << "Danh sach vua nhap la: ";
-        xuat(l);
-        if (l.pHead->pNext == NULL)
-        {
-            check = false;
-            cout << endl
-                 << "Danh sach khong tang.";
-        }
-        if (check == true)
-        {
-            node *t = CreateNode(x);
-            AddTail(l, t);
-            cout << endl
-                 << "Danh sach sau khi chen so " << x << " la: ";
-            SortIncrease(l);
-            xuat(l);
-        }
-        if (tang(l) == false)
-        {
-            cout << endl
-                 << "Danh sach khong tang.";
-        }
+        result = b;
+        result->pNext = merge(a, b->pNext);
     }
+    return (result);
+}
+
+
+int main()
+{
+    List l, l1, l2;
+    CreateList(l);
+    CreateList(l1);
+    CreateList(l2);
+    nhap(l1);
+    nhap(l2);
+    if (l1.pHead == NULL)
+    {
+        cout << "Danh sach l1 rong.";
+    }
+    else
+    {
+        cout << "Danh sach l1 la: ";
+        xuat(l1);
+    }
+    if (l2.pHead == NULL)
+    {
+        cout << endl
+             << "Danh sach l2 rong.";
+    }
+    else
+    {
+        cout << endl
+             << "Danh sach l2 la: ";
+        xuat(l2);
+    }
+    if (l1.pHead != NULL && l2.pHead != NULL)
+    {
+        cout << endl
+             << "Danh sach l1 sau khi sap xep la: ";
+        SortIncrease(l1);
+        xuat(l1);
+        cout << endl
+             << "Danh sach l2 sau khi sap xep la: ";
+        SortIncrease(l2);
+        xuat(l2);
+        cout << endl;
+        l.pHead = merge(l1.pHead, l2.pHead);
+        cout<<"Ket qua tron l1 voi l2 la: ";
+        xuat(l);
+    }
+    else
+        cout << endl
+             << "Khong tron duoc.";
     return 0;
 }

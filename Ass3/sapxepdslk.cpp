@@ -1,3 +1,5 @@
+#include <iostream>
+using namespace std;
 struct node
 {
     int info;
@@ -109,17 +111,6 @@ node *Merge(node *h1, node *h2)
 
     return h1;
 }
-bool tang(List l)
-{
-
-    for (node *t = l.pHead; t->pNext != NULL; t = t->pNext)
-    {
-        if (t->info > t->pNext->info)
-
-            return false;
-    }
-    return true;
-}
 void MergeSort(node **head)
 {
     node *first = new node;
@@ -157,6 +148,7 @@ void SortIncrease(List &l)
 {
     MergeSort(&l.pHead);
 }
+
 int main()
 {
     List l;
@@ -166,32 +158,12 @@ int main()
         cout << "Danh sach rong.";
     else
     {
-        int check = tang(l);
-        int x = 0;
-        if (check == true)
-            cin >> x;
         cout << "Danh sach vua nhap la: ";
         xuat(l);
-        if (l.pHead->pNext == NULL)
-        {
-            check = false;
-            cout << endl
-                 << "Danh sach khong tang.";
-        }
-        if (check == true)
-        {
-            node *t = CreateNode(x);
-            AddTail(l, t);
-            cout << endl
-                 << "Danh sach sau khi chen so " << x << " la: ";
-            SortIncrease(l);
-            xuat(l);
-        }
-        if (tang(l) == false)
-        {
-            cout << endl
-                 << "Danh sach khong tang.";
-        }
+        cout << endl
+             << "Danh sach sau khi sap xep la: ";
+        SortIncrease(l);
+        xuat(l);
     }
     return 0;
 }
