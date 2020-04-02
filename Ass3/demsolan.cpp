@@ -10,6 +10,8 @@ struct node
     int info;
     node *pNext;
     int max;
+    int count = 1;
+    bool check = true;
 };
 struct List
 {
@@ -43,6 +45,19 @@ node *CreateNodeMax(int x, int max)
     return pNew;
 }
 
+void AddHead(List &l, node *p)
+{
+    if (l.pHead == NULL)
+    {
+        l.pHead = p;
+        l.pTail = l.pHead;
+    }
+    else
+    {
+        p->pNext = l.pHead;
+        l.pHead = p;
+    }
+}
 void AddTail(List &l, node *p)
 {
     if (l.pHead == NULL)
@@ -65,7 +80,7 @@ void nhap(List &L)
         if (x == 0)
             break;
         node *P = CreateNode(x);
-        AddTail(L, P);
+        AddHead(L, P);
     }
 }
 void xuatMax(List L, int max)
@@ -73,10 +88,10 @@ void xuatMax(List L, int max)
     node *P = L.pHead;
     while (P != NULL)
     {
-        if (P->max == max)
+        if (P->count == max)
             cout
                 << endl
-                << P->info << ": " << P->max;
+                << P->info << ": " << P->count;
         P = P->pNext;
     }
 }
@@ -89,48 +104,30 @@ void xuat(List L)
         P = P->pNext;
     }
 }
-void ReverseList(List &l)
-{
 
-    if (l.pHead != NULL)
-    {
-        node *p1 = l.pHead;
-        node *p2 = l.pHead->pNext;
-        p1->pNext = NULL;
-
-        while (p2 != NULL)
-        {
-
-            p1 = p2;
-            p2 = p2->pNext;
-            p1->pNext = l.pHead;
-            l.pHead = p1;
-        }
-    }
-}
-void dem(List &l, List &l1, int &max)
+void dem(List &l, int &max)
 {
     node *p = l.pHead;
     max = 1;
-    int total_count = 0, res = -1;
     while (p != NULL)
     {
-
-        int count = 1;
-        struct node *q = p->pNext;
-        while (q != NULL)
+        if (p->check == true)
         {
-            if (p->info == q->info)
-                count++;
-            q = q->pNext;
-        }
+            node *q = p->pNext;
+            while (q != NULL)
+            {
+                if (p->info == q->info)
+                {
+                    p->count++;
+                    q->check = false;
+                }
+                q = q->pNext;
+            }
 
-        if (count >= max)
-        {
-            max = count;
-            res = p->info;
-            node *t = CreateNodeMax(res, max);
-            AddTail(l1, t);
+            if (p->count >= max)
+            {
+                max = p->count;
+            }
         }
         p = p->pNext;
     }
@@ -140,16 +137,14 @@ int main()
     List l, l1;
     int max;
     CreateList(l);
-    CreateList(l1);
     nhap(l);
     if (l.pHead == NULL)
         cout << "Danh sach rong.";
     else
     {
-        ReverseList(l);
         xuat(l);
-        dem(l, l1, max);
-        xuatMax(l1, max);
+        dem(l, max);
+        xuatMax(l, max);
     }
     return 0;
 }
