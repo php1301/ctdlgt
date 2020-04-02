@@ -122,6 +122,16 @@ bool tang(List l)
     }
     return true;
 }
+bool checkDup(List l)
+{
+    for (node *t = l.pHead; t->pNext != NULL; t = t->pNext)
+    {
+        if (t->info != t->pNext->info)
+
+            return false;
+    }
+    return true;
+}
 void MergeSort(node **head)
 {
     node *first = new node;
@@ -158,6 +168,16 @@ void MergeSort(node **head)
 void SortIncrease(List &l)
 {
     MergeSort(&l.pHead);
+
+    // for (node *t = l.pHead; t->pNext != NULL; t = t->pNext)
+    // {
+    //     for (node *p = t->pNext; p != NULL; p = p->pNext)
+    //     {
+    //         if (t->info > p->info)
+
+    //             swap(t->info, p->info);
+    //     }
+    // }
 }
 int main()
 {
@@ -168,20 +188,12 @@ int main()
         cout << "Danh sach rong.";
     else
     {
-        int check = tang(l);
         int x = 0;
-        if (check == true)
+        if (tang(l) == true && checkDup(l) == false && l.pHead->pNext != NULL)
+        {
             cin >> x;
-        cout << "Danh sach vua nhap la: ";
-        xuat(l);
-        if (l.pHead->pNext == NULL)
-        {
-            check = false;
-            cout << endl
-                 << "Danh sach khong tang.";
-        }
-        if (check == true)
-        {
+            cout << "Danh sach vua nhap la: ";
+            xuat(l);
             node *t = CreateNode(x);
             AddTail(l, t);
             cout << endl
@@ -189,8 +201,10 @@ int main()
             SortIncrease(l);
             xuat(l);
         }
-        if (tang(l) == false)
+        else
         {
+            cout << "Danh sach vua nhap la: ";
+            xuat(l);
             cout << endl
                  << "Danh sach khong tang.";
         }
