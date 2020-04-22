@@ -6,20 +6,36 @@
 
 using namespace std;
 
-int binary(int arr[], int l, int r, int x)
+int binary(int A[], int N, int x, int search)
 {
-    if (r < l)
-        return -1;
+    int low = 0, high = N;
 
-    int mid = l + (r - l) / 2;
+    int result = -1;
 
-    if (arr[mid] == x)
-        return mid;
+    while (low <= high)
+    {
 
-    if (arr[mid] > x)
-        return binary(arr, l, mid - 1, x);
+        int mid = (low + high) / 2;
 
-    return binary(arr, mid + 1, r, x);
+        if (x == A[mid])
+        {
+            result = mid;
+
+            if (search)
+                high = mid - 1;
+
+            else
+                low = mid + 1;
+        }
+
+        else if (x < A[mid])
+            high = mid - 1;
+
+        else
+            low = mid + 1;
+    }
+
+    return result;
 }
 void nhap(int a[], int n)
 {
@@ -28,25 +44,11 @@ void nhap(int a[], int n)
         cin >> a[i];
     }
 }
-void equal(int arr[], int n, int x)
+void xuat(int a[], int n)
 {
-    int des = binary(arr, 0, n - 1, x);
-
-    if (des == -1)
-        cout << -1;
-    else
+    for (int i = 0; i < n; i++)
     {
-        int count = 1;
-        int left = des - 1;
-        while (left >= 0 && arr[left] == x)
-            count++, left--;
-
-        int right = des + 1;
-        while (right < n && arr[right] == x)
-            count++, right++;
-        int start = des + 1;
-        int end = des + count;
-        cout << count << " " << start << " " << end;
+        cout << "Phan tu thu " << i + 1 << " " << a[i] << endl;
     }
 }
 int main()
@@ -59,8 +61,17 @@ int main()
     nhap(k, m);
     for (int i = 0; i < m; i++)
     {
-        equal(array, n, k[i]);
-        cout << endl;
+        int first = binary(array, n, k[i], 1);
+        int last = binary(array, n, k[i], 0);
+        int count = last - first + 1;
+        if (first == -1)
+        {
+            cout << -1 << endl;
+        }
+        else
+        {
+            cout << count << " " << first + 1 << " " << last + 1 << endl;
+        }
     }
     delete[] array, k;
     return 0;
