@@ -1,0 +1,3 @@
+
+		Push(Result , Pop(St)) ;
+	}
