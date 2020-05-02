@@ -91,7 +91,27 @@ int orientation(Point p, Point q, Point r)
 
     return (val > 0) ? 1 : 2;
 }
+// ham kiếm giao điểm copy trên mạng để test cho nhanh :v
+Point giaoDiem(Point A, Point B, Point C, Point D)
+{
+    // Line AB represented as a1x + b1y = c1
+    double a1 = B.y - A.y;
+    double b1 = A.x - B.x;
+    double c1 = a1 * (A.x) + b1 * (A.y);
 
+    // Line CD represented as a2x + b2y = c2
+    double a2 = D.y - C.y;
+    double b2 = C.x - D.x;
+    double c2 = a2 * (C.x) + b2 * (C.y);
+
+    double determinant = a1 * b2 - a2 * b1;
+
+    double x = (b2 * c1 - b1 * c2) / determinant;
+    double y = (a1 * c2 - a2 * c1) / determinant;
+    cout << endl
+         << "Giao diem la "
+         << "{" << x << ";" << y << "}";
+}
 bool giaoDiem(Path l1, Path l2)
 {
     node *p1 = l1.pHead;
@@ -108,26 +128,31 @@ bool giaoDiem(Path l1, Path l2)
             //  case bình thường
             if (o1 != o2 && o3 != o4)
             {
+                giaoDiem(p1->info, p1->pNext->info, p2->info, p2->pNext->info);
                 return true;
             }
 
             //  cases bất thường (điểm path này thuộc pa)
             if (o1 == 0 && onSegment(p1->info, p2->info, p1->pNext->info))
             {
+                giaoDiem(p1->info, p1->pNext->info, p2->info, p2->pNext->info);
                 return true;
             }
 
             if (o2 == 0 && onSegment(p1->info, p2->pNext->info, p1->pNext->info))
             {
+                giaoDiem(p1->info, p1->pNext->info, p2->info, p2->pNext->info);
                 return true;
             }
 
             if (o3 == 0 && onSegment(p2->info, p1->info, p2->pNext->info))
             {
+                giaoDiem(p1->info, p1->pNext->info, p2->info, p2->pNext->info);
                 return true;
             }
             if (o4 == 0 && onSegment(p2->info, p1->pNext->info, p2->pNext->info))
             {
+                giaoDiem(p1->info, p1->pNext->info, p2->info, p2->pNext->info);
                 return true;
             }
             if (p2->pNext->pNext == NULL)
@@ -153,6 +178,9 @@ int main()
     xuat(l1);
     xuat(l2);
     cout << endl;
-    giaoDiem(l1, l2) ? cout << "Yes" << endl : cout << "No" << endl;
+    giaoDiem(l1, l2) ? cout << endl
+                            << "Yes" << endl
+                     : cout << endl
+                            << "No" << endl;
     return 0;
 }
