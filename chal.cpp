@@ -1,4 +1,3 @@
-// A C++ program to check if two given line segments intersect
 #include <iostream>
 using namespace std;
 
@@ -105,13 +104,13 @@ bool giaoDiem(Path l1, Path l2)
             int o3 = orientation(p2->info, p2->pNext->info, p1->info);
             int o4 = orientation(p2->info, p2->pNext->info, p1->pNext->info);
 
-            // General case
+            //  case bình thường
             if (o1 != o2 && o3 != o4)
             {
                 return true;
             }
 
-            // Special Cases
+            //  cases bất thường (điểm path này thuộc path kia)
             if (o1 == 0 && onSegment(p1->info, p2->info, p1->pNext->info))
             {
                 return true;
