@@ -14,41 +14,44 @@ void nhap(long long a[], int n)
     }
 }
 
-void sort(long long a[], int min, int max, vector<Res> &input)
+void divide(long long a[], int n, int i, vector<Res> &input, bool check)
 {
-    int p = a[(min + max) / 2];
-    int i = min;
-    int j = max;
+    int goc = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
     Res res;
-    while (i <= j)
+    if (l < n && a[l] < a[goc])
     {
-        while (a[i] > p)
-            i++;
-        while (a[j] < p)
-            j--;
-        if (i <= j)
+        goc = l;
+    }
+    if (r < n && a[r] < a[goc])
+    {
+        goc = r;
+    }
+    if (goc != i)
+    {
+        if (check == true)
         {
-            if (i != j)
-            {
-                res.i = i + 1;
-                res.j = j + 1;
-                input.push_back(res);
-            }
-            swap(a[i], a[j]);
-            i++;
-            j--;
+            res.i = i;
+            res.j = goc;
+            input.push_back(res);
         }
-    }
-    if (min < j)
-    {
-        sort(a, min, j, input);
-    }
-    if (i < max)
-    {
-        sort(a, i, max, input);
+        swap(a[goc], a[i]);
+        divide(a, n, goc, input, check);
     }
 }
-void heapDiv()
+void heap(long long a[], int n, vector<Res> &input)
+{
+    bool check = true;
+    for (int i = n / 2 - 1; i >= 0; i--)
+        divide(a, n, i, input, check);
+    for (int i = n - 1; i > 0; i--)
+    {
+        check = false;
+        swap(a[0], a[i]);
+        divide(a, i, 0, input, check);
+    }
+}
 void xuat(long long a[], int n)
 {
     for (int i = 0; i < n; i++)
@@ -74,12 +77,12 @@ int main()
     nhap(a, n);
     cout << "Day truoc khi sap xep: ";
     xuat(a, n);
-    sort(a, 0, n - 1, v);
+    heap(a, n, v);
     cout << endl
          << "Day sau khi sap xep: ";
     xuat(a, n);
     cout << endl
-         << "Cac hoan vi duoc thuc hien trong Quick Sort: " << endl;
+         << "Cac hoan vi duoc thuc hien trong heap: " << endl;
     xuatVec(v);
     return 0;
 }
