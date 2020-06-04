@@ -118,11 +118,11 @@ int main()
     cout << "k=1" << endl;
     // const auto &lastVecsKey = prev(vecs.end(), 1)->second;
     int i;
-    for (i = 0; i < k - 1; i++)
+    for (i = 0; i <= k; i++)
     {
         bool check = false;
-        cout 
-             << "[";
+        cout
+            << "[";
         for (auto &e : vecs)
         {
             if (e.first == i)
@@ -137,7 +137,7 @@ int main()
         // cout << endl;
         if (check == true)
         {
-            if (i + 1 == k - 1)
+            if (i + 1 == k)
                 break;
             cout << "k=" << i + 2;
         }
@@ -145,16 +145,16 @@ int main()
         check = false;
     }
     cout << "k=" << i + 2 << endl;
-    for (int j = k - 2; j >= 0; j--)
+    for (int j = k - 2; j >= -1; j--)
     {
         bool check = true;
         for (auto &e : vecs2)
         {
-            if (e.first == k + 1 - j)
+            if (e.first == k + 1 - j - 1)
             {
                 if (check == true)
-                    cout 
-                         << "[";
+                    cout
+                        << "[";
                 xuat(e.second);
                 cout << ",";
                 check = false;
@@ -162,10 +162,10 @@ int main()
         }
         cout << "\b";
         cout << "]" << endl;
-        // cout << endl;
-        if (j - 1 == -1)
+        // cout<<endl;
+        if (j - 1 == -2)
             break;
-        cout << "k=" << 2 * k - j - 1;
+        cout << "k=" << 2 * k - j;
         cout << endl;
     }
 
