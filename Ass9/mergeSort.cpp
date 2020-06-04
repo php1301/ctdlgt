@@ -1,95 +1,181 @@
 #include <iostream>
+#include <vector>
+#include <math.h>
+
 using namespace std;
-void nhap(long long int a[], int n)
+void nhap(vector<long long int> &v, int n)
 {
+    int input = 0;
     for (int i = 0; i < n; i++)
     {
-        cin >> a[i];
+        cin >> input;
+        v.push_back(input);
     }
 }
-void xuat(long long int a[], int n)
+void xuat(vector<long long int> &v)
 {
-    for (int i = 0; i < n; i++)
+    for (auto i = v.begin(); i != v.end(); i++)
     {
-        cout << a[i] << " ";
-    }
-}
-void merge(long long int a[], int left, int mid, int right)
-{
-    int i, j, k;
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-    long long int leftArr[n1], rightArr[n2];
-    for (i = 0; i < n1; i++)
-    {
-        leftArr[i] = a[left + i];
-    }
-    // cout << endl
-    //      << "Left array" << endl;
-    // xuat(leftArr, n1);
-    for (j = 0; j < n2; j++)
-    {
-        rightArr[j] = a[mid + 1 + j];
-    }
-    // cout << endl
-    //      << "Right array" << endl;
-    // xuat(rightArr, n2);
-    cout << "Left arr" << endl;
-    xuat(leftArr, n1);
-    cout << "Right arr" << endl;
-    xuat(rightArr, n2);
-    i = 0;
-    j = 0;
-    k = left;
-    while (i < n1 && j < n2)
-    {
-        if (leftArr[i] >= rightArr[j])
+        if (*i == 69)
         {
-            a[k] = leftArr[i];
-            i++;
+            v.erase(i);
+            i--;
+        }
+    }
+    if (!v.empty())
+    {
+        cout << "[";
+        for (auto i = v.begin(); i != v.end(); i++)
+        {
+            {
+                (i == v.end() - 1) ? cout << *i : cout << *i << ",";
+            }
+        }
+        cout << "]";
+    }
+}
+
+vector<pair<int, vector<long long int>>> vecs;
+vector<pair<int, vector<long long int>>> vecs2;
+int k = 0;
+void merge(vector<long long int> &leftVector, vector<long long int> &rightVector, vector<long long int> &vectortoMerge)
+{
+
+    int left = leftVector.size();
+    int right = rightVector.size();
+    int i = 0, j = 0, k = 0;
+
+    while (j < left and k < right)
+    {
+
+        if (leftVector[j] > rightVector[k])
+        {
+
+            vectortoMerge[i] = leftVector[j];
+            j++;
         }
         else
         {
-            a[k] = rightArr[j];
-            j++;
+
+            vectortoMerge[i] = rightVector[k];
+
+            k++;
         }
-        k++;
-    }
-    while (i < n1)
-    {
-        a[k] = leftArr[i];
+
         i++;
-        k++;
+    }
+    while (j < left)
+    {
+
+        vectortoMerge[i] = leftVector[j];
+        j++;
+        i++;
     }
 
-    while (j < n2)
+    while (k < right)
     {
-        a[k] = rightArr[j];
-        j++;
+
+        vectortoMerge[i] = rightVector[k];
         k++;
+        i++;
     }
 }
 
-void mergeSort(long long int a[], int left, int right)
+void mergeSort(vector<long long int> &sortVector, int level = 0)
 {
-    if (left < right)
+    if (level > k)
+        k = level + 1;
+    if (sortVector.size() <= 1)
     {
-        int mid = (left + right) / 2;
-        merge(a, left, mid, right);
-        mergeSort(a, left, mid);
-        mergeSort(a, mid + 1, right);
+        return;
     }
+
+    double middleElement = ceil((double)sortVector.size() / 2);
+    vector<long long int> leftVector;
+    vector<long long int> rightVector;
+
+    for (int j = 0; j < middleElement; j++)
+    {
+        if ((int)middleElement != 1 && (sortVector.size() / 2) % 2 == 1)
+        {
+            sortVector.push_back(69);
+        }
+        leftVector.push_back(sortVector[j]);
+    }
+
+    for (int j = 0; j < (sortVector.size()) - middleElement; j++)
+    {
+        if (middleElement != 1 && (sortVector.size() / 2) % 2 == 1)
+        {
+            sortVector.push_back(69);
+        }
+        rightVector.push_back(sortVector[middleElement + j]);
+    }
+    vecs.push_back(make_pair(level, leftVector));
+    mergeSort(leftVector, level + 1);
+
+    vecs.push_back(make_pair(level, rightVector));
+    mergeSort(rightVector, level + 1);
+    merge(leftVector, rightVector, sortVector);
+    vecs2.push_back(make_pair(k + 1 - level, sortVector));
 }
 
 int main()
 {
     int n = 0;
     cin >> n;
-    long long int *a = new long long int[n];
-    nhap(a, n);
-    xuat(a, n);
-    mergeSort(a, 0, n - 1);
-    cout << endl;
-    xuat(a, n);
+    vector<long long int> v;
+    // vector<long long int> v{56, 135, 15, 1, 9, 24, 17};
+    nhap(v, n);
+    mergeSort(v);
+    cout << "k=1" << endl;
+    // const auto &lastVecsKey = prev(vecs.end(), 1)->second;
+    int i;
+    for (i = 0; i < k; i++)
+    {
+        bool check = false;
+        cout << "[";
+        for (auto &e : vecs)
+        {
+            if (e.first == i)
+            {
+                xuat(e.second);
+                cout << ",";
+                check = true;
+            }
+        }
+        cout << "]" << endl;
+        if (check == true)
+        {
+            if (i + 1 == k)
+                break;
+            cout << "k=" << i + 2;
+        }
+        cout << endl;
+    }
+    cout << "k=" << k + 1 << endl;
+    for (int j = i - 1; i < 2 * (k - 1); j++)
+    {
+        bool check = false;
+        cout << "[";
+        for (auto &e : vecs2)
+        {
+            if (e.first == j)
+            {
+                xuat(e.second);
+                cout << ",";
+                check = true;
+            }
+        }
+        cout << "]" << endl;
+        if (check == true)
+        {
+            if (j + 1 == 2 * (k - 1))
+                break;
+            cout << "k=" << k + j;
+        }
+        cout << endl;
+    }
+
     return 0;
 }
