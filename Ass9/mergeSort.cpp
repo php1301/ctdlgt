@@ -140,7 +140,7 @@ int main()
             if (e.first == i)
             {
                 xuat(e.second);
-                cout << ",";
+                // cout << ",";
                 check = true;
             }
         }
@@ -152,27 +152,29 @@ int main()
             cout << "k=" << i + 2;
         }
         cout << endl;
+        check = false;
     }
-    cout << "k=" << k + 1 << endl;
-    for (int j = i - 1; i < 2 * (k - 1); j++)
+    cout << "k=" << i + 1 << endl;
+    i--;
+    for (i; i < k + 2; i++)
     {
         bool check = false;
         cout << "[";
         for (auto &e : vecs2)
         {
-            if (e.first == j)
+            if (e.first == i)
             {
                 xuat(e.second);
-                cout << ",";
+                // cout << ",";
                 check = true;
             }
         }
         cout << "]" << endl;
         if (check == true)
         {
-            if (j + 1 == 2 * (k - 1))
+            if (i + 1 == k + 2)
                 break;
-            cout << "k=" << k + j;
+            cout << "k=" << k + i;
         }
         cout << endl;
     }
