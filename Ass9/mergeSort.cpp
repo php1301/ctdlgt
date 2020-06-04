@@ -14,14 +14,7 @@ void nhap(vector<long long int> &v, int n)
 }
 void xuat(vector<long long int> &v)
 {
-    for (auto i = v.begin(); i != v.end(); i++)
-    {
-        if (*i == 69)
-        {
-            v.erase(i);
-            i--;
-        }
-    }
+
     if (!v.empty())
     {
         cout << "[";
@@ -81,12 +74,15 @@ void merge(vector<long long int> &leftVector, vector<long long int> &rightVector
     }
 }
 
-void mergeSort(vector<long long int> &sortVector, int level = 0)
+void mergeSort(vector<long long int> &sortVector, int n, int level = 0)
 {
+
     if (level > k)
         k = level + 1;
     if (sortVector.size() <= 1)
     {
+        vecs.push_back(make_pair(level, sortVector));
+        vecs2.push_back(make_pair(k + 1 - level, sortVector));
         return;
     }
 
@@ -96,26 +92,17 @@ void mergeSort(vector<long long int> &sortVector, int level = 0)
 
     for (int j = 0; j < middleElement; j++)
     {
-        if ((int)middleElement != 1 && (sortVector.size() / 2) % 2 == 1)
-        {
-            sortVector.push_back(69);
-        }
         leftVector.push_back(sortVector[j]);
     }
 
     for (int j = 0; j < (sortVector.size()) - middleElement; j++)
     {
-        if (middleElement != 1 && (sortVector.size() / 2) % 2 == 1)
-        {
-            sortVector.push_back(69);
-        }
         rightVector.push_back(sortVector[middleElement + j]);
     }
     vecs.push_back(make_pair(level, leftVector));
-    mergeSort(leftVector, level + 1);
-
+    mergeSort(leftVector, n, level + 1);
     vecs.push_back(make_pair(level, rightVector));
-    mergeSort(rightVector, level + 1);
+    mergeSort(rightVector, n, level + 1);
     merge(leftVector, rightVector, sortVector);
     vecs2.push_back(make_pair(k + 1 - level, sortVector));
 }
@@ -127,11 +114,11 @@ int main()
     vector<long long int> v;
     // vector<long long int> v{56, 135, 15, 1, 9, 24, 17};
     nhap(v, n);
-    mergeSort(v);
+    mergeSort(v, n);
     cout << "k=1" << endl;
     // const auto &lastVecsKey = prev(vecs.end(), 1)->second;
     int i;
-    for (i = 0; i < k; i++)
+    for (i = 0; i <= k; i++)
     {
         bool check = false;
         cout << "[";
@@ -147,22 +134,20 @@ int main()
         cout << "]" << endl;
         if (check == true)
         {
-            if (i + 1 == k)
-                break;
+            // if (i + 1 == k)
+            //     break;
             cout << "k=" << i + 2;
         }
         cout << endl;
         check = false;
     }
-    cout << "k=" << i + 1 << endl;
-    i--;
-    for (i; i < k + 2; i++)
+    for (int j = 1; j < k + 2; j++)
     {
         bool check = false;
         cout << "[";
         for (auto &e : vecs2)
         {
-            if (e.first == i)
+            if (e.first == j)
             {
                 xuat(e.second);
                 // cout << ",";
@@ -172,9 +157,9 @@ int main()
         cout << "]" << endl;
         if (check == true)
         {
-            if (i + 1 == k + 2)
+            if (j + 1 == k + 2)
                 break;
-            cout << "k=" << k + i;
+            cout << "k=" << k + j + 2;
         }
         cout << endl;
     }
