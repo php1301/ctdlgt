@@ -76,11 +76,11 @@ void merge(vector<long long int> &leftVector, vector<long long int> &rightVector
 
 void mergeSort(vector<long long int> &sortVector, int n, int level = 0)
 {
-
     if (level > k)
         k = level + 1;
     if (sortVector.size() <= 1)
     {
+
         vecs.push_back(make_pair(level, sortVector));
         vecs2.push_back(make_pair(k + 1 - level, sortVector));
         return;
@@ -101,9 +101,12 @@ void mergeSort(vector<long long int> &sortVector, int n, int level = 0)
     }
     vecs.push_back(make_pair(level, leftVector));
     mergeSort(leftVector, n, level + 1);
+
     vecs.push_back(make_pair(level, rightVector));
     mergeSort(rightVector, n, level + 1);
+
     merge(leftVector, rightVector, sortVector);
+
     vecs2.push_back(make_pair(k + 1 - level, sortVector));
 }
 
@@ -111,15 +114,20 @@ int main()
 {
     int n = 0;
     cin >> n;
+    double depth = ceil((double)n / 4);
     vector<long long int> v;
     // vector<long long int> v{56, 135, 15, 1, 9, 24, 17};
     nhap(v, n);
     mergeSort(v, n);
     cout << "k=1" << endl;
     // const auto &lastVecsKey = prev(vecs.end(), 1)->second;
-    int i;
-    for (i = 0; i <= k; i++)
+    int i = 0;
+    int count = 0;
+    int maxCount = 0;
+    bool loopCheck = true;
+    while (loopCheck)
     {
+        count = i + 2;
         bool check = false;
         cout
             << "[";
@@ -127,46 +135,70 @@ int main()
         {
             if (e.first == i)
             {
-                xuat(e.second);
-                cout << ",";
-                check = true;
+                if (!e.second.empty())
+                {
+                    xuat(e.second);
+                    maxCount++;
+                    cout << ",";
+                    check = true;
+                }
             }
         }
-        cout << "\b";
-        cout << "]" << endl;
-        // cout << endl;
         if (check == true)
         {
-            if (i + 1 == k)
+            cout << "\b";
+            cout << "]" << endl;
+            if (maxCount == n)
+            {
+                loopCheck = false;
                 break;
-            cout << "k=" << i + 2;
+            }
+            {
+                cout << "k=" << count;
+                count++;
+            }
+            cout << endl;
+            check = false;
+            maxCount = 0;
         }
-        cout << endl;
-        check = false;
+        i++;
     }
-    cout << "k=" << i + 2 << endl;
-    for (int j = k - 2; j >= -1; j--)
+    cout << "k=" << count << endl;
+    int j = k + 1 - i;
+    loopCheck = true;
+    while (loopCheck)
     {
-        bool check = true;
+        bool check = false;
+        cout
+            << "[";
         for (auto &e : vecs2)
         {
-            if (e.first == k + 1 - j - 1)
+            if (e.first == j)
             {
-                if (check == true)
-                    cout
-                        << "[";
-                xuat(e.second);
-                cout << ",";
-                check = false;
+                if (!e.second.empty())
+                {
+                    xuat(e.second);
+                    maxCount++;
+                    cout << ",";
+                    check = true;
+                }
             }
         }
-        cout << "\b";
-        cout << "]" << endl;
-        // cout<<endl;
-        if (j - 1 == -2)
-            break;
-        cout << "k=" << 2 * k - j;
-        cout << endl;
+        if (check == true)
+        {
+            cout << "\b";
+            cout << "]" << endl;
+            if (maxCount == 1)
+                break;
+            {
+                cout << "k=" << count + 1;
+                count++;
+            }
+            cout << endl;
+            check = false;
+            maxCount = 0;
+        }
+        j++;
     }
 
     return 0;
