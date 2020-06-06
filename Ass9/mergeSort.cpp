@@ -3,14 +3,13 @@
 #include <math.h>
 
 using namespace std;
-void nhap(vector<int> &v, int n, int &last)
+void nhap(vector<int> &v, int n)
 {
     int input = 0;
     for (int i = 0; i < n; i++)
     {
         cin >> input;
         v.push_back(input);
-        last = v[i];
     }
 }
 void xuat(vector<int> &v)
@@ -28,6 +27,41 @@ void xuat(vector<int> &v)
         cout << "]";
     }
 }
+void xuatSubVecs(vector<int> &v, int comma, int count)
+{
+    if (!v.empty())
+    {
+        cout << "[";
+        for (auto i = v.begin(); i != v.end(); i++)
+        {
+            {
+                (i == v.end() - 1) ? cout << *i : cout << *i << ",";
+            }
+        }
+        if (count < comma)
+            cout << "],";
+        else
+        {
+            cout << "]";
+        }
+    }
+}
+
+void xuatVecs(vector<vector<int>> &v, int comma)
+{
+    int count = 0;
+    if (!v.empty())
+    {
+        cout << "[";
+        for (auto &i : v)
+        {
+            xuatSubVecs(i, comma, count);
+            count++;
+        }
+        cout << "]" << endl;
+    }
+}
+
 bool contain(vector<int> v, int last)
 {
     for (auto i = v.begin(); i != v.end(); i++)
@@ -131,14 +165,12 @@ int main()
     cin >> n;
     vector<int> v;
     vector<int> temp;
-    // vector<int> v{56, 135, 15, 1, 9, 24, 17};
-    int last = 0;
-    nhap(v, n, last);
+    vector<vector<int>> temp2;
+    nhap(v, n);
     mergeSort(v, n);
     cout << "k=1" << endl;
     v.clear();
     v.shrink_to_fit();
-    // const auto &lastVecsKey = prev(vecs.end(), 1)->second;
     int i = 0;
     int count = 0;
     int maxCount = 0;
@@ -147,35 +179,26 @@ int main()
     {
         count = i + 2;
         bool check = false;
-        cout
-            << "[";
+        // cout
+        //     << "[";
         for (auto &e : vecs)
         {
             if (e.first == i)
             {
                 if (!e.second.empty())
                 {
-                    xuat(e.second);
+
+                    temp2.push_back(e.second);
                     maxCount++;
-                    if (e.second.back() != last)
-                    {
-                        cout << ",";
-                    }
-                    else
-                    {
-                        if (i == maxLevel && maxCount != n)
-                        {
-                            cout << ",";
-                        }
-                    }
                     check = true;
                 }
             }
         }
+        xuatVecs(temp2, maxCount - 1);
+        temp2.clear();
+        temp2.shrink_to_fit();
         if (check == true)
         {
-            // cout << "\b";
-            cout << "]" << endl;
             if (maxCount == n)
             {
                 loopCheck = false;
@@ -248,6 +271,7 @@ int main()
         }
         j++;
     }
-
+    vecs2.clear();
+    vecs2.shrink_to_fit();
     return 0;
 }
