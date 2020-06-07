@@ -3,6 +3,13 @@
 #include <math.h>
 
 using namespace std;
+vector<vector<int>> vecs;
+vector<int> vecs2;
+vector<pair<int, vector<int>>> vecs3;
+int k = 0;
+int levelCount = 0;
+int maxLevel = 0;
+int assignMax = 0;
 void nhap(vector<int> &v, int n)
 {
     int input = 0;
@@ -12,7 +19,7 @@ void nhap(vector<int> &v, int n)
         v.push_back(input);
     }
 }
-void xuat(vector<int> &v)
+void xuat2(vector<int> &v)
 {
 
     if (!v.empty())
@@ -46,7 +53,6 @@ void xuatSubVecs(vector<int> &v, int comma, int count)
         }
     }
 }
-
 void xuatVecs(vector<vector<int>> &v, int comma)
 {
     int count = 0;
@@ -62,11 +68,39 @@ void xuatVecs(vector<vector<int>> &v, int comma)
     }
 }
 
-vector<pair<int, vector<int>>> vecs;
-vector<pair<int, vector<int>>> vecs2;
-int k = 0;
-int maxLevel = 0;
-int assignMax = 0;
+void xuat(vector<vector<int>> &v, vector<int> v2, vector<int> &temp, int n)
+{
+    vector<vector<int>> temp2;
+    cout << "k=1" << endl;
+    int maxCount = 0;
+    while (1)
+    {
+        for (auto i = v2.begin(); i != v2.end(); i++)
+        {
+            if (levelCount == *i)
+            {
+                // cout << "[";
+                int index = distance(v2.begin(), i);
+                if (!v.at(index).empty())
+                {
+                    maxCount++;
+                    temp2.push_back(v.at(index));
+                }
+            }
+        }
+        xuatVecs(temp2, maxCount - 1);
+        temp2.clear();
+        temp2.shrink_to_fit();
+
+        if (maxCount == n)
+            break;
+        temp.push_back(maxCount);
+        cout << "k=" << levelCount + 2 << endl;
+        maxCount = 0;
+        levelCount++;
+    }
+}
+
 void merge(vector<int> &leftVector, vector<int> &rightVector, vector<int> &vectortoMerge)
 {
 
@@ -109,58 +143,8 @@ void merge(vector<int> &leftVector, vector<int> &rightVector, vector<int> &vecto
         i++;
     }
 }
-void absoluteXuat(vector<pair<int, vector<int>>> &vecs, vector<vector<int>> &temp2, vector<int> temp, int n)
-{
-    int i = 0;
-    int count = 0;
-    int maxCount = 0;
-    bool loopCheck = true;
-    while (loopCheck)
-    {
-        count = i + 2;
-        bool check = false;
-        // cout
-        //     << "[";
-        for (auto &e : vecs)
-        {
-            if (e.first == i)
-            {
-                if (!e.second.empty())
-                {
 
-                    temp2.push_back(e.second);
-                    maxCount++;
-                    check = true;
-                }
-            }
-        }
-        xuatVecs(temp2, maxCount - 1);
-        vector<vector<int>>().swap(temp2);
-        if (check == true)
-        {
-            if (maxCount == n)
-            {
-                loopCheck = false;
-                break;
-            }
-            {
-                cout << "k=" << count;
-                count++;
-            }
-            cout << endl;
-            check = false;
-            temp.push_back(maxCount);
-            maxCount = 0;
-        }
-        if (i == 9)
-        {
-            break;
-        }
-        i++;
-    }
-    // vector<pair<int, vector<int>>>().swap(vecs);
-}
-void mergeSort(vector<int> &sortVector, int n, vector<vector<int>> &temp2, vector<int> temp, int level = 0)
+void mergeSort(vector<int> &sortVector, int n, int level = 0)
 {
     if (level > k)
     {
@@ -171,14 +155,13 @@ void mergeSort(vector<int> &sortVector, int n, vector<vector<int>> &temp2, vecto
         assignMax++;
         if (assignMax == n)
             maxLevel = level;
-        vecs.push_back(make_pair(level, sortVector));
-        vector<int>().swap(sortVector);
-        vecs2.push_back(make_pair(k + 1 - level, sortVector));
-        vector<int>().swap(sortVector);
+        vecs.push_back(sortVector);
+        vecs2.push_back(level);
+        // vecs2.push_back(make_pair(k + 1 - level, sortVector));
         return;
     }
 
-    double middleElement = ceil((double)sortVector.size() / 2);
+    int middleElement = ceil((double)sortVector.size() / 2);
     vector<int> leftVector;
     vector<int> rightVector;
 
@@ -191,19 +174,48 @@ void mergeSort(vector<int> &sortVector, int n, vector<vector<int>> &temp2, vecto
     {
         rightVector.push_back(sortVector[middleElement + j]);
     }
-    vecs.push_back(make_pair(level, leftVector));
-    mergeSort(leftVector, n, temp2, temp, level + 1);
+    vecs.push_back(leftVector);
+    vecs2.push_back(level);
+    vecs.push_back(rightVector);
+    vecs2.push_back(level);
+    mergeSort(leftVector, n, level + 1);
 
-    vecs.push_back(make_pair(level, rightVector));
-    mergeSort(rightVector, n, temp2, temp, level + 1);
+    mergeSort(rightVector, n, level + 1);
+}
+void mergeSort2(vector<int> &sortVector, int n, int level = 0)
+{
+    if (level > k)
+    {
+        k = level + 1;
+    }
+    if (sortVector.size() <= 1)
+    {
+        assignMax++;
+        if (assignMax == n)
+            maxLevel = level;
+        vecs3.push_back(make_pair(k + 1 - level, sortVector));
+        return;
+    }
 
-    absoluteXuat(vecs, temp2, temp, n);
+    int middleElement = ceil((double)sortVector.size() / 2);
+    vector<int> leftVector;
+    vector<int> rightVector;
+
+    for (int j = 0; j < middleElement; j++)
+    {
+        leftVector.push_back(sortVector[j]);
+    }
+
+    for (int j = 0; j < (sortVector.size()) - middleElement; j++)
+    {
+        rightVector.push_back(sortVector[middleElement + j]);
+    }
+    mergeSort2(leftVector, n, level + 1);
+
+    mergeSort2(rightVector, n, level + 1);
+
     merge(leftVector, rightVector, sortVector);
-    vector<int>().swap(leftVector);
-    vector<int>().swap(rightVector);
-    vector<pair<int, vector<int>>>().swap(vecs);
-    vecs2.push_back(make_pair(k + 1 - level, sortVector));
-    vector<int>().swap(sortVector);
+    vecs3.push_back(make_pair(k + 1 - level, sortVector));
 }
 
 int main()
@@ -212,67 +224,76 @@ int main()
     cin >> n;
     vector<int> v;
     vector<int> temp;
-    vector<vector<int>> temp2;
     nhap(v, n);
-    mergeSort(v, n, temp2, temp);
-    cout << "k=1" << endl;
-    vector<int>().swap(v);
+    mergeSort(v, n);
+    xuat(vecs, vecs2, temp, n);
+    vecs.clear();
+    vecs.shrink_to_fit();
+    vecs2.clear();
+    vecs2.shrink_to_fit();
+    mergeSort2(v, n);
+    v.clear();
+    v.shrink_to_fit();
+    int i = 0;
+    int maxCount = 0;
+    bool loopCheck = true;
+    cout << "k=" << levelCount + 2 << endl;
+    int j = k + 1 - levelCount;
+    loopCheck = true;
+    int count = levelCount + 1;
+    while (loopCheck)
+    {
+        maxCount = 0;
+        bool check = false;
+        cout
+            << "[";
+        for (auto &e : vecs3)
+        {
+            if (e.first == j)
+            {
+                if (!e.second.empty())
+                {
+                    int test = 0;
+                    if (k - j < 0)
+                    {
+                        test = 1;
+                    }
+                    else
+                    {
+                        test = temp.at(k - j);
+                    }
+                    xuat2(e.second);
+                    maxCount++;
+                    if (maxCount != test)
+                    {
+                        cout << ",";
+                    }
+                    check = true;
+                }
+            }
+        }
+        if (check == true)
+        {
+            if (maxCount != 1)
+                cout << "]" << endl;
+            if (n == 2)
+                break;
+            if (maxCount == 1)
+            {
+                cout << "]";
+                break;
+            }
+            {
+                count++;
+                cout << "k=" << count + 1;
+            }
+            cout << endl;
+            check = false;
+        }
 
-    // cout << "k=" << count << endl;
-    // int j = k + 1 - i;
-    // loopCheck = true;
-    // while (loopCheck)
-    // {
-    //     maxCount = 0;
-    //     bool check = false;
-    //     cout
-    //         << "[";
-    //     for (auto &e : vecs2)
-    //     {
-    //         if (e.first == j)
-    //         {
-    //             if (!e.second.empty())
-    //             {
-    //                 int test = 0;
-    //                 if (k - j < 0)
-    //                 {
-    //                     test = 1;
-    //                 }
-    //                 else
-    //                 {
-    //                     test = temp.at(k - j);
-    //                 }
-    //                 xuat(e.second);
-    //                 maxCount++;
-    //                 if (maxCount != test)
-    //                 {
-    //                     cout << ",";
-    //                 }
-    //                 check = true;
-    //             }
-    //         }
-    //     }
-    //     if (check == true)
-    //     {
-    //         if (maxCount != 1)
-    //             cout << "]" << endl;
-    //         if (n == 2)
-    //             break;
-    //         if (maxCount == 1)
-    //         {
-    //             cout << "]";
-    //             break;
-    //         }
-    //         {
-    //             cout << "k=" << count + 1;
-    //             count++;
-    //         }
-    //         cout << endl;
-    //         check = false;
-    //     }
-    //     j++;
-    // }
-    // vecs2.clear();
-    // vecs2.shrink_to_fit();
+        j++;
+    }
+    vecs3.clear();
+    vecs3.shrink_to_fit();
     return 0;
 }
