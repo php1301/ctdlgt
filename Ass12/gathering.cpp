@@ -1,4 +1,3 @@
-
 #include <iostream>
 using namespace std;
 
@@ -7,6 +6,8 @@ struct TNode
     int key;
     TNode *pLeft;
     TNode *pRight;
+    bool check = false;
+    int count = 0;
 };
 
 typedef TNode *Tree;
@@ -51,72 +52,104 @@ void CreateTree(Tree &T)
     T = NULL;
 }
 
-int InsertNode(Tree &T, int x)
+void InsertNode(Tree &T, int x, bool check)
 {
     if (T != NULL)
     {
         if (T->key == x)
-            return InsertNode(T->pLeft, x);
+        {
+            T->count++;
+            return;
+        }
+
         if (T->key > x)
-            return InsertNode(T->pLeft, x);
+            return InsertNode(T->pLeft, x, check);
         else
-            return InsertNode(T->pRight, x);
+            return InsertNode(T->pRight, x, check);
     }
     T = new TNode;
-    if (T == NULL)
-        return -1;
     T->key = x;
     T->pLeft = NULL;
     T->pRight = NULL;
-    return 1;
+    return;
 }
-
-void delNode(Tree &t, int data)
+void delNodeMax(Tree &n)
 {
-    if (t == NULL)
-    {
+
+    TNode *prev = n;
+    TNode *temp = n;
+    if (!n)
         return;
-    }
-    if (t->key < data)
+
+    while (temp->pRight)
     {
-        delNode(t->pRight, data);
+        prev = temp;
+        temp = temp->pRight;
     }
-    else if (t->key > data)
+    if (temp->count == 0)
     {
-        delNode(t->pLeft, data);
+        TNode *d = temp;
+        cout << d->key << endl;
+        temp = temp->pLeft;
+        delete d;
     }
     else
     {
-        if (t->pLeft == NULL)
-        {
-
-            t = t->pRight;
-        }
-        else if (t->pRight == NULL)
-        {
-            t = t->pLeft;
-        }
-
-        else
-        {
-            TNode *x = t->pLeft;
-            while (x->pRight != NULL)
-            {
-                x = x->pRight;
-            }
-            t->key = x->key;
-            delNode(t->pLeft, x->key);
-        }
+        TNode *d = n;
+        cout << d->key << endl;
+        n->count--;
     }
 }
-int maxValue(TNode *node)
+void deleteIterative(Tree &root)
 {
-    TNode *current = node;
-    while (current->pRight != NULL)
-        current = current->pRight;
+    Tree curr = root;
+    Tree prev = NULL;
 
-    return (current->key);
+    while (curr->pRight != NULL)
+    {
+        prev = curr;
+
+        curr = curr->pRight;
+    }
+
+    if (curr->count == 0)
+    {
+
+        if (curr->pLeft == NULL && curr->pRight == NULL && prev == NULL)
+        {
+            cout << curr->key << endl;
+            root = NULL;
+            return;
+        }
+        if (curr->pLeft == NULL && curr->pRight == NULL && prev != NULL)
+        {
+            cout << curr->key << endl;
+            prev->pRight = NULL;
+            return;
+        }
+        if (curr->pLeft && prev)
+        {
+            cout << curr->key << endl;
+            prev->pRight = curr->pLeft;
+            return;
+        }
+        if (root == curr)
+        {
+
+            cout << curr->key << endl;
+            root = root->pLeft;
+            curr->pLeft = NULL;
+            return;
+        }
+    }
+    else
+    {
+        cout << curr->key << endl;
+        curr->count--;
+        return;
+    }
 }
+
 void nhap(Tree &T, List &L)
 {
     while (1)
@@ -128,17 +161,14 @@ void nhap(Tree &T, List &L)
             if (T == NULL)
             {
                 cout << "NULL" << endl;
-                // string x = "NULL";
-                // Node *temp = CreateNode(x);
-                // AddTail(L, temp);
             }
             else
             {
-                // string x = to_string(maxValue(T));
-                // Node *temp = CreateNode(x);
-                // AddTail(L, temp);
-                cout << maxValue(T) << endl;
-                delNode(T, maxValue(T));
+
+                // delNodeMax(T);
+                // delNodeMax(T);
+                // delNode(T, maxValue(T));
+                deleteIterative(T);
             }
         }
         if (s == 'E')
@@ -149,20 +179,18 @@ void nhap(Tree &T, List &L)
         {
             int x;
             cin >> x;
-            InsertNode(T, x);
+            if (T == NULL)
+            {
+                InsertNode(T, x, true);
+            }
+            else
+            {
+                InsertNode(T, x, false);
+            }
         }
     }
 }
-void deleteTree(Tree &T)
-{
-    if (T == NULL)
-        return;
 
-    deleteTree(T->pLeft);
-    deleteTree(T->pRight);
-
-    delete T;
-}
 int main()
 {
     int n;
@@ -172,9 +200,4 @@ int main()
     CreateList(L);
 
     nhap(T, L);
-    deleteTree(T);
-    for (Node *i = L.pHead; i != NULL; i = i->pNext)
-    {
-        cout << i->info << endl;
-    }
 }
